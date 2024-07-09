@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TenisShop - Produtos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <link rel="stylesheet" href="./../css/site.css">
+    <style>
+        /* CSS para o pedido sidebar */
+        .order-sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            /* Esconder o pedido inicialmente */
+            width: 300px;
+            height: 100%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+        }
+
+        .order-sidebar.open {
+            right: 0;
+            /* Mostrar o pedido quando estiver aberto */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">TenisShop</a>
+            <div class="icons">
+                <a href="#" class="search-icon" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></a>
+                <a href="#" id="order-icon"><i class="fas fa-clipboard-list"></i></a>
+                <a href="#" id="user-icon" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="fas fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Produtos</a></li>
+            <li><a href="#">Categorias</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="container">
+                <h2 class="section-title">Categorias</h2>
+                <ul class="category-list" id="categoryList">
+                    <!-- Categorias serão inseridas dinamicamente aqui -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="container" id="produtosContainer">
+                <h2 class="section-title" id="categoriaSelecionada">Produtos</h2>
+                <div class="row" id="productList">
+                    <!-- Produtos serão inseridos dinamicamente aqui -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pedido -->
+    <div class="order-sidebar" id="orderSidebar">
+        <h3>Pedido</h3>
+        <ul id="orderItems">
+            <!-- Itens do pedido serão inseridos dinamicamente aqui -->
+        </ul>
+        <div class="order-buttons">
+            <button class="btn btn-primary" id="checkoutBtn">Finalizar Pedido</button>
+            <button class="btn btn-secondary" id="closeOrder">Fechar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Produto -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Detalhes do Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Conteúdo do modal será inserido dinamicamente aqui -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addToCartBtn">Adicionar ao Carrinho</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 TenisShop. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            carregarCategorias(); // Carrega as categorias ao carregar a página
+
+            // Adiciona evento de clique nas categorias
+            document.getElementById('categoryList').addEventListener('click', function (event) {
+                if (event.target.tagName === 'A') {
+                    const categoriaNome = event.target.textContent.trim();
+                    carregarProdutosPorCategoria(categoriaNome);
+                }
+            });
+
+            // Abrir e fechar pedido
+            document.getElementById('order-icon').addEventListener('click', function () {
+                document.getElementById('orderSidebar').classList.add('open');
+            });
+            document.getElementById('closeOrder').addEventListener('click', function () {
+                document.getElementById('orderSidebar').classList.remove('open');
+            });
+
+            // Abrir modal de detalhes do produto ao clicar em um card de produto
+            document.getElementById('productList').addEventListener('click', function (event) {
+                if (event.target.classList.contains('details-btn')) {
+                    const card = event.target.closest('.card');
+                    const productId = card.getAttribute('data-id'); // Obtém o ID do produto do atributo data-id do card
+                    carregarDetalhesDoProduto(productId);
+                }
+            });
+
+            // Adicionar ao carrinho ao clicar no botão dentro do modal
+            document.getElementById('addToCartBtn').addEventListener('click', function () {
+                const productId = document.getElementById('productId').value; // Obtém o ID do produto do modal
+                adicionarAoCarrinho(1, productId); // Adiciona 1 unidade do produto ao carrinho
+                const productModal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                productModal.hide();
+            });
+
+            // Função para carregar as categorias
+            function carregarCategorias() {
+                fetch('http://localhost:8080/categorias')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar as categorias.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const categoryList = document.getElementById('categoryList');
+                        categoryList.innerHTML = '';
+                        data.forEach(categoria => {
+                            const li = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = '#';
+                            link.textContent = categoria.nome;
+                            li.appendChild(link);
+                            categoryList.appendChild(li);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar categorias:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Função para carregar produtos de uma categoria específica
+            function carregarProdutosPorCategoria(categoriaNome) {
+                fetch(`http://localhost:8080/produtos/categoria/${encodeURIComponent(categoriaNome)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar os produtos.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const productList = document.getElementById('productList');
+                        productList.innerHTML = '';
+                        data.forEach(produto => {
+                            const card = document.createElement('div');
+                            card.classList.add('card', 'col-md-4', 'mb-4');
+                            card.setAttribute('data-id', produto.id); // Atributo data-id para identificar o produto
+                            card.innerHTML = `
+                               <img src="http://localhost:8080/produtos/imagem/${produto.id}" class="img-fluid" alt="${produto.nome}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${produto.nome}</h5>
+                                    <p class="card-text">${produto.descricao}</p>
+                                    <p class="card-price">R$ ${produto.preco.toFixed(2)}</p>
+                                    <button class="btn btn-primary details-btn" data-bs-toggle="modal" data-bs-target="#productModal">Detalhes</button>
+                                </div>
+                            `;
+                            productList.appendChild(card);
+                        });
+                        document.getElementById('categoriaSelecionada').textContent = categoriaNome; // Atualiza o título da seção de produtos
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar produtos:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Função para carregar detalhes do produto no modal
+            function carregarDetalhesDoProduto(productId) {
+                fetch(`http://localhost:8080/produtos/${productId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar os detalhes do produto.');
+                        }
+                        return response.json();
+                    })
+                    .then(produto => {
+                        const modalBody = document.getElementById('modalBody');
+                        modalBody.innerHTML = `
+                            <input type="hidden" id="productId" value="${produto.id}">
+                            <img src="http://localhost:8080/produtos/imagem/${produto.id}" class="img-fluid" alt="${produto.nome}">
+                            <h5>${produto.nome}</h5>
+                            <p>${produto.descricao}</p>
+                            <p class="card-price">R$ ${produto.preco.toFixed(2)}</p>
+                        `;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar detalhes do produto:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Função para adicionar um item ao carrinho
+            function adicionarAoCarrinho(quantidade, produtoId) {
+                const produto = { id: produtoId, quantidade: quantidade };
+
+                // Verifica se o produto já está no carrinho
+                const itemExistente = Array.from(document.querySelectorAll('#orderItems li')).find(item => item.dataset.id === produtoId);
+
+                if (itemExistente) {
+                    // Atualiza a quantidade do item existente no carrinho
+                    const quantidadeSpan = itemExistente.querySelector('.item-quantity');
+                    const quantidadeAtual = parseInt(quantidadeSpan.textContent);
+                    quantidadeSpan.textContent = quantidadeAtual + quantidade;
+                } else {
+                    // Adiciona um novo item ao carrinho
+                    const orderItems = document.getElementById('orderItems');
+                    const li = document.createElement('li');
+                    li.dataset.id = produtoId;
+                    li.innerHTML = `
+                        <span class="item-name">${produtoId}</span>
+                        <span class="item-quantity">${quantidade}</span>
+                        <button class="btn btn-sm btn-danger remove-item">Remover</button>
+                    `;
+                    orderItems.appendChild(li);
+                }
+
+                // Adiciona evento de clique ao botão de remover item do carrinho
+                const removeButtons = document.querySelectorAll('.remove-item');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const item = this.closest('li');
+                        item.remove();
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TenisShop - Produtos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <link rel="stylesheet" href="../../css/site.css">
+    <style>
+	* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+header {
+    background-color: #343a40;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icons {
+    display: flex;
+    gap: 20px;
+}
+
+.icons a {
+    color: #fff;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.icons a:hover {
+    color: #f8f9fa;
+}
+
+.search-icon {
+    cursor: pointer;
+}
+
+.modal-backdrop {
+    opacity: 0.5 !important;
+}
+
+.modal-content {
+    background-color: #f8f9fa;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-title {
+    font-size: 24px;
+}
+
+.form-control {
+    border-radius: 5px;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #343a40;
+    padding: 20px 10px;
+    color: #fff;
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    display: block;
+    padding: 10px;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    border-radius: 5px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #007bff;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+.hero {
+    padding: 100px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    padding: 15px 30px;
+    background-color: #fff;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.categories-section {
+    background-color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.category-list li {
+    margin-bottom: 10px;
+}
+
+.category-list li a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 18px;
+    transition: color 0.3s;
+    padding: 10px 20px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.category-list li a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.products-section {
+    background-color: #f8f9fa;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 36px;
+    margin-bottom: 50px;
+}
+
+.row {
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+.card-img-top {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+footer p {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .hero {
+        padding: 80px 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 36px;
+    }
+
+    .hero-content p {
+        font-size: 18px;
+    }
+
+    .cta-button {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .category-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-list li a {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+
+    .section-title {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+
+    .card-title {
+        font-size: 20px;
+    }
+
+    .card-text {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+/* Estilos do Sidebar do Carrinho */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px; /* Começa escondido à direita */
+    width: 250px;
+    height: 100%;
+    background-color: #f0f0f0;
+    padding-top: 60px;
+    transition: 0.3s;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.cart-content {
+    padding: 20px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.cart-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Estilos gerais */
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.icons a {
+    margin-right: 15px;
+    color: #333;
+}
+
+.section-title {
+    margin-bottom: 30px;
+}
+
+.category-list li {
+    margin-bottom: 10px;
+}
+
+.products-section {
+    margin-top: 30px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    color: #666;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+}
+
+.icons .fas {
+    font-size: 1.5rem;
+}
+
+.footer {
+    background-color: #f8f9fa;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+        /* CSS para o pedido sidebar */
+        .order-sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            /* Esconder o pedido inicialmente */
+            width: 300px;
+            height: 100%;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+        }
+
+        .order-sidebar.open {
+            right: 0;
+            /* Mostrar o pedido quando estiver aberto */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">TenisShop</a>
+            <div class="icons">
+                <a href="#" class="search-icon" data-bs-toggle="modal" data-bs-target="#searchModal"><i
+                        class="fas fa-search"></i></a>
+                <a href="#" id="order-icon"><i class="fas fa-clipboard-list"></i></a>
+                <a href="#" id="user-icon" data-bs-toggle="modal" data-bs-target="#loginModal"><i
+                        class="fas fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Produtos</a></li>
+            <li><a href="#">Categorias</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="container">
+                <h2 class="section-title">Categorias</h2>
+                <ul class="category-list" id="categoryList">
+                    <!-- Categorias serão inseridas dinamicamente aqui -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="container" id="produtosContainer">
+                <h2 class="section-title" id="categoriaSelecionada">Produtos</h2>
+                <div class="row" id="productList">
+                    <!-- Produtos serão inseridos dinamicamente aqui -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pedido -->
+    <div class="order-sidebar" id="orderSidebar">
+        <h3>Pedido</h3>
+        <ul id="orderItems">
+            <!-- Itens do pedido serão inseridos dinamicamente aqui -->
+        </ul>
+        <div class="order-buttons">
+            <button class="btn btn-primary" id="checkoutBtn">Finalizar Pedido</button>
+            <button class="btn btn-secondary" id="closeOrder">Fechar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Produto -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Detalhes do Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Conteúdo do modal será inserido dinamicamente aqui -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addToCartBtn">Adicionar ao Carrinho</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 TenisShop. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            carregarCategorias(); // Carrega as categorias ao carregar a página
+
+            // Adiciona evento de clique nas categorias
+            document.getElementById('categoryList').addEventListener('click', function (event) {
+                if (event.target.tagName === 'A') {
+                    const categoriaNome = event.target.textContent.trim();
+                    carregarProdutosPorCategoria(categoriaNome);
+                }
+            });
+
+            // Abrir e fechar pedido
+            document.getElementById('order-icon').addEventListener('click', function () {
+                document.getElementById('orderSidebar').classList.add('open');
+            });
+            document.getElementById('closeOrder').addEventListener('click', function () {
+                document.getElementById('orderSidebar').classList.remove('open');
+            });
+
+            // Função para carregar as categorias
+            function carregarCategorias() {
+                fetch('http://localhost:8080/categorias')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar as categorias.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const categoryList = document.getElementById('categoryList');
+                        categoryList.innerHTML = '';
+                        data.forEach(categoria => {
+                            const li = document.createElement('li');
+                            const link = document.createElement('a');
+                            link.href = '#';
+                            link.textContent = categoria.nome;
+                            li.appendChild(link);
+                            categoryList.appendChild(li);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar categorias:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Função para carregar produtos de uma categoria específica
+            function carregarProdutosPorCategoria(categoriaNome) {
+                fetch(`http://localhost:8080/produtos/categoria/${encodeURIComponent(categoriaNome)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar os produtos.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const productList = document.getElementById('productList');
+                        productList.innerHTML = '';
+                        data.forEach(produto => {
+                            const card = document.createElement('div');
+                            card.classList.add('card', 'col-md-4', 'mb-4');
+                            card.innerHTML = `
+                                <img src="http://localhost:8080/produtos/imagem/${produto.id}" class="card-img-top" alt="${produto.nome}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${produto.nome}</h5>
+                                    <p class="card-price">R$ ${produto.preco.toFixed(2)}</p>
+                                    <button class="btn btn-primary details-btn" data-bs-toggle="modal" data-bs-target="#productModal" data-id="${produto.id}">Detalhes</button>
+                                </div>
+                            `;
+                            productList.appendChild(card);
+                        });
+                        document.getElementById('categoriaSelecionada').textContent = `Produtos - ${categoriaNome}`;
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar produtos:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Evento para carregar detalhes do produto ao abrir o modal
+            document.getElementById('productModal').addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // Botão que acionou o modal
+                const productId = button.getAttribute('data-id'); // ID do produto a ser carregado
+                carregarDetalhesDoProduto(productId);
+            });
+
+            // Função para carregar detalhes de um produto específico no modal
+            function carregarDetalhesDoProduto(productId) {
+                fetch(`http://localhost:8080/produtos/${productId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar os detalhes do produto.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const modalBody = document.getElementById('modalBody');
+                        modalBody.innerHTML = `
+                            <img src="http://localhost:8080/produtos/imagem/${data.id}" class="img-fluid mb-3" alt="${data.nome}">
+                            <h5>${data.nome}</h5>
+                            <p class="modal-price">Preço: R$ ${data.preco.toFixed(2)}</p>
+                            <p>${data.descricao}</p>
+                        `;
+                        // Defina o ID do produto no campo hidden
+                        const addToCartBtn = document.getElementById('addToCartBtn');
+                        addToCartBtn.setAttribute('data-id', data.id);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar detalhes do produto:', error);
+                        // Trate o erro de forma adequada, exibindo uma mensagem ao usuário, por exemplo.
+                    });
+            }
+
+            // Adicionar produto ao carrinho
+            document.getElementById('addToCartBtn').addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                adicionarAoCarrinho(productId);
+            });
+
+            function adicionarAoCarrinho(productId) {
+                // Implemente a lógica para adicionar ao carrinho aqui
+                console.log(`Produto ID ${productId} adicionado ao carrinho.`);
+                // Exemplo simples: mostrar um alerta usando SweetAlert
+                swal('Produto Adicionado', 'O produto foi adicionado ao seu carrinho.', 'success');
+            }
+        });
+    </script>
+</body>
+
+</html>

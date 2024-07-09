@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <!-- Adicionando Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Adicionando FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card-login {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+        .card-titulo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-floating {
+            margin-bottom: 20px;
+            position: relative; /* Para posicionamento relativo */
+        }
+        .form-floating label {
+            font-weight: bold;
+        }
+        .form-floating input[type="text"],
+        .form-floating input[type="password"] {
+            padding: 12px 40px 12px 12px; /* Aumenta o padding do lado direito para espaço do ícone */
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            width: 100%; /* Preenche completamente o espaço disponível */
+        }
+        .form-floating input[type="text"]:focus,
+        .form-floating input[type="password"]:focus {
+            border-color: #007bff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .form-floating .form-control {
+            border: none;
+        }
+        .form-floating .input-group-text {
+            background-color: transparent;
+            border: none;
+            position: absolute;
+            right: 12px; /* Posiciona o ícone à direita */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2; /* Coloca o ícone sobre o input */
+            color: #ccc; /* Cor do ícone */
+        }
+        .form-group button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin: 0 auto; /* Centraliza o botão */
+        }
+        .cadastrar {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .cadastrar a {
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .cadastrar a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-login">
+            <div class="card-titulo">
+                <h2 class="mb-4">Sistema de Gestão</h2>
+            </div>
+            <form id="loginForm">
+                <div class="form-floating mb-3">
+                    <input type="text" id="email" name="email" class="form-control" placeholder=" " required>
+                    <label for="email">Email</label>
+                    <i class="fas fa-envelope input-group-text"></i>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" id="senha" name="senha" class="form-control" placeholder=" " required>
+                    <label for="senha">Senha</label>
+                    <i class="fas fa-lock input-group-text"></i>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                </div>
+            </form>
+            <div class="cadastrar">
+                <p class="mb-0">Ainda não tem uma conta? <a href="Cadastro.html" class="btn btn-link">Cadastre-se aqui</a></p>
+            </div>
+        </div>
+    </div>
+<a href=""></a>
+    <!-- Adicionando Bootstrap 5 JavaScript e dependências opcionais -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Adicionando FontAwesome para ícones -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <!-- Adicionando jQuery para AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#loginForm').submit(function(event) {
+                event.preventDefault(); // Evita que o formulário seja enviado por padrão
+
+                // Coleta os dados do formulário
+                var formData = {
+                    email: $('#email').val(),
+                    senha: $('#senha').val()
+                };
+
+                // Faz a requisição AJAX para fazer login
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8080/clientes/login',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        if (response === 'Admin') {
+                            alert('Login realizado com sucesso como Administrador.');
+                            // Redireciona para o dashboard do administrador após o login bem-sucedido
+                            window.location.href = './sistema/Dashboard.html'; // URL do dashboard do admin
+                        } else if (response === 'Cliente') {
+                            alert('Login realizado com sucesso como Cliente.');
+                            // Redireciona para o dashboard do cliente após o login bem-sucedido
+                            window.location.href = './sistema/Dashboard.html'; // URL do dashboard do cliente
+                        } else {
+                            alert('Resposta inesperada do servidor.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Erro ao fazer login: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

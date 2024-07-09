@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente</title>
+    <!-- Inclua jQuery antes do Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Inclua o FontAwesome para ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            background-color: #fff;
+        }
+        .card-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            font-size: 16px;
+            box-shadow: none;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .form-label {
+            position: absolute;
+            top: -10px;
+            left: 25px;
+            background-color: #fff;
+            padding: 0 5px;
+            color: #007bff;
+            font-weight: 500;
+            font-size: 14px;
+            transition: 0.2s ease all;
+        }
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            color: #ced4da;
+        }
+        .btn-primary {
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Cadastro de Cliente</h2>
+                        <form id="formCadastroCliente">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                                <label for="nome" class="form-label">Nome</label>
+                                <i class="input-icon fas fa-user"></i>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <label for="email" class="form-label">Email</label>
+                                <i class="input-icon fas fa-envelope"></i>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="senha" name="senha" required>
+                                <label for="senha" class="form-label">Senha</label>
+                                <i class="input-icon fas fa-lock"></i>
+                            </div>
+                            <!-- Campo de nível fixo para "Cliente" -->
+                            <input type="hidden" id="nivel" name="nivel" value="Cliente">
+
+                            <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inclua Bootstrap JS depois do jQuery -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Axios para fazer requisições HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        // Evento de submit do formulário
+        document.getElementById('formCadastroCliente').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita o envio padrão do formulário
+
+            // Obtém os dados do formulário
+            let nome = document.getElementById('nome').value;
+            let email = document.getElementById('email').value;
+            let senha = document.getElementById('senha').value;
+            let nivel = document.getElementById('nivel').value;
+
+            // Objeto com os dados do cliente
+            let clienteData = {
+                nome: nome,
+                email: email,
+                senha: senha,
+                nivel: {
+                    id: 1 // Ajuste conforme o ID do nível desejado
+                }
+            };
+
+            // Exemplo de requisição POST usando Axios
+            axios.post('http://localhost:8080/clientes', clienteData)
+                .then(function(response) {
+                    alert('Cliente cadastrado com sucesso!');
+                    
+                    // Redireciona para a página de login após 3 segundos
+                    setTimeout(() => {
+                        window.location.href = './login.html'; // Ajuste o caminho conforme necessário
+                    }, 3000);
+                })
+                .catch(function(error) {
+                    console.error('Erro ao cadastrar cliente:', error);
+                    alert('Erro ao cadastrar cliente: ' + error.message);
+                });
+        });
+    </script>
+</body>
+</html>

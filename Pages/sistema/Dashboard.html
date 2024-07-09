@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./../../css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="navbar-brand mb-3 mt-2 text-center">
+                    Painel Administrativo
+                </div>
+                <ul class="navbar-nav flex-column mb-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./Clientes.html"><i class="fas fa-users"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./Gerenciar.html" id="linkProdutos"><i class="fas fa-boxes"></i> Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./categoria.html" id="linkCategorias"><i class="fas fa-tags"></i> Categorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./pedidos.html" id="linkPedidos"><i class="fas fa-clipboard-list"></i> Pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                    <!-- Adicione mais itens de navegação conforme necessário -->
+                </ul>
+            </nav>
+            <main class="col-md-9 col-lg-10 main-content">
+                <div class="container">
+                    <h1 class="mt-4">Dashboard</h1>
+                    <div id="dashboard">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Produtos Cadastrados</h5>
+                                        <p class="card-text" id="quantidadeProdutos">Carregando...</p>
+                                        <button class="btn btn-card" href="./produtos.html">Ver Produtos</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Clientes Cadastrados</h5>
+                                        <p class="card-text" id="quantidadeClientes">Carregando...</p>
+                                        <button class="btn btn-card" href="./Clientes.html">Ver Clientes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Categorias Cadastradas</h5>
+                                        <p class="card-text" id="quantidadeCategorias">Carregando...</p>
+                                        <button class="btn btn-card" href="./categoria.html">Ver Categorias</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Estoque Disponível</h5>
+                                        <p class="card-text" id="quantidadeEstoque">Carregando...</p>
+                                        <button class="btn btn-card">Ver Estoque</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Pedidos Pendentes</h5>
+                                        <p class="card-text" id="quantidadePedidos">Carregando...</p>
+                                        <a href="./pedidos.html" class="btn btn-card">Ver Pedidos</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlListarProdutos = 'http://localhost:8080/produtos';
+            const urlListarClientes = 'http://localhost:8080/clientes';
+            const urlListarCategorias = 'http://localhost:8080/categorias';
+            const urlListarEstoque = 'http://localhost:8080/estoque';
+            const urlListarPedidos = 'http://localhost:8080/pedidos';
+            const urlLogout = 'http://localhost:8080/clientes/logout';
+
+            // Função para buscar produtos e exibir na página
+            function buscarProdutos() {
+                fetch(urlListarProdutos)
+                    .then(response => response.json())
+                    .then(produtos => {
+                        const quantidadeProdutos = document.getElementById('quantidadeProdutos');
+                        quantidadeProdutos.textContent = produtos.length.toString();
+                    })
+                    .catch(error => console.error('Erro ao buscar produtos:', error));
+            }
+
+            // Função para buscar clientes e exibir na página
+            function buscarClientes() {
+                fetch(urlListarClientes)
+                    .then(response => response.json())
+                    .then(clientes => {
+                        const quantidadeClientes = document.getElementById('quantidadeClientes');
+                        quantidadeClientes.textContent = clientes.length.toString();
+                    })
+                    .catch(error => console.error('Erro ao buscar clientes:', error));
+            }
+
+            // Função para buscar categorias e exibir na página
+            function buscarCategorias() {
+                fetch(urlListarCategorias)
+                    .then(response => response.json())
+                    .then(categorias => {
+                        const quantidadeCategorias = document.getElementById('quantidadeCategorias');
+                        quantidadeCategorias.textContent = categorias.length.toString();
+                    })
+                    .catch(error => console.error('Erro ao buscar categorias:', error));
+            }
+
+            // Função para buscar quantidade de produtos em estoque
+            function buscarEstoque() {
+                fetch(urlListarEstoque)
+                    .then(response => response.json())
+                    .then(estoque => {
+                        const quantidadeEstoque = document.getElementById('quantidadeEstoque');
+                        quantidadeEstoque.textContent = estoque.quantidade.toString(); // Assumindo que a API retorna um objeto com o campo 'quantidade'
+                    })
+                    .catch(error => console.error('Erro ao buscar estoque:', error));
+            }
+
+            // Função para buscar pedidos pendentes
+            function buscarPedidos() {
+                fetch(urlListarPedidos)
+                    .then(response => response.json())
+                    .then(pedidos => {
+                        const quantidadePedidos = document.getElementById('quantidadePedidos');
+                        quantidadePedidos.textContent = pedidos.length.toString();
+                    })
+                    .catch(error => console.error('Erro ao buscar pedidos:', error));
+            }
+
+            // Função para realizar logout
+            function logout() {
+                fetch(urlLogout, {
+                        method: 'POST',
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Redirecionar para a página de login após logout
+                            window.location.href = './../Login.html'; // Altere para sua página de login
+                        } else {
+                            console.error('Erro ao fazer logout:', response.statusText);
+                        }
+                    })
+                    .catch(error => console.error('Erro ao fazer logout:', error));
+            }
+
+            // Adicionar evento de clique ao botão de logout
+            document.getElementById('logoutBtn').addEventListener('click', function (event) {
+                event.preventDefault();
+                if (confirm('Tem certeza que deseja fazer logout?')) {
+                    logout();
+                }
+            });
+
+            // Chamar as funções para buscar dados ao carregar a página
+            buscarProdutos();
+            buscarClientes();
+            buscarCategorias();
+            buscarEstoque();
+            buscarPedidos();
+        });
+    </script>
+
+</body>
+
+</html>

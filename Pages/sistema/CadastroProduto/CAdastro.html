@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Cadastro de Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./../../../css/dashboard.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <div class="navbar-brand mb-3 mt-2 text-center">Painel Administrativo</div>
+            <ul class="navbar-nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./../Clientes.html"><i class="fas fa-users"></i> Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./../Gerenciar.html" id="linkProdutos"><i class="fas fa-boxes"></i> Produtos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./../categoria.html" id="linkCategorias"><i class="fas fa-tags"></i> Categorias</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </nav>
+        <main class="col-md-9 col-lg-10 main-content">
+            <div class="container">
+                <h1 class="mt-4"><i class="fas fa-box"></i> Cadastro de Produto</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="formCadastroProduto" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="nomeProduto" class="form-label"><i class="fas fa-tag"></i> Nome do Produto</label>
+                                <input type="text" class="form-control" id="nomeProduto" name="nomeProduto" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricaoProduto" class="form-label"><i class="fas fa-align-left"></i> Descrição</label>
+                                <textarea class="form-control" id="descricaoProduto" name="descricaoProduto" style="height: 100px;" required></textarea>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col">
+                                    <label for="precoProduto" class="form-label"><i class="fas fa-dollar-sign"></i> Preço</label>
+                                    <input type="number" step="0.01" class="form-control" id="precoProduto" name="precoProduto" required>
+                                </div>
+                                <div class="col">
+                                    <label for="quantidadeProduto" class="form-label"><i class="fas fa-sort-numeric-up"></i> Quantidade</label>
+                                    <input type="number" class="form-control" id="quantidadeProduto" name="quantidadeProduto" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoriaProduto" class="form-label"><i class="fas fa-tags"></i> Categoria</label>
+                                <select class="form-select" id="categoriaProduto" name="categoriaProduto" required>
+                                    <option value="" disabled selected></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagemProduto" class="form-label"><i class="fas fa-image"></i> Imagem</label>
+                                <input type="file" class="form-control" id="imagemProduto" name="imagemProduto" accept="image/*" required>
+                                <div id="imagemErro" class="invalid-feedback"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlListarCategorias = 'http://localhost:8080/categorias';
+
+        function carregarCategorias() {
+            fetch(urlListarCategorias)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao buscar categorias.');
+                    }
+                    return response.json();
+                })
+                .then(categorias => {
+                    const selectCategoria = document.getElementById('categoriaProduto');
+                    selectCategoria.innerHTML = ''; // Limpa o conteúdo atual do select
+                    if (categorias && categorias.length > 0) {
+                        categorias.forEach(categoria => {
+                            const option = document.createElement('option');
+                            option.value = categoria.id;
+                            option.textContent = categoria.nome;
+                            selectCategoria.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'Nenhuma categoria disponível';
+                        selectCategoria.appendChild(option);
+                        selectCategoria.disabled = true;
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar categorias:', error));
+        }
+
+        const formCadastroProduto = document.getElementById('formCadastroProduto');
+        formCadastroProduto.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(formCadastroProduto);
+            const urlCadastroProduto = 'http://localhost:8080/produtos';
+
+            fetch(urlCadastroProduto, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao cadastrar produto.');
+                }
+                formCadastroProduto.reset();
+                alert('Produto cadastrado com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro ao cadastrar produto:', error);
+                document.getElementById('imagemErro').textContent = 'Erro ao enviar a imagem. Verifique o formato e o tamanho do arquivo.';
+            });
+        });
+
+        carregarCategorias();
+    });
+</script>
+
+</body>
+</html>

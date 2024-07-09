@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Clientes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <style>
+        body {
+            background-color: #e9ecef;
+            /* Cor de fundo do corpo */
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            /* Cor do texto do navbar */
+        }
+
+        .navbar-brand:hover {
+            color: #fff;
+            /* Cor do texto do navbar ao passar o mouse */
+            text-decoration: none;
+        }
+
+        .main-content {
+            background-color: #fff;
+            /* Cor do fundo do conteúdo principal */
+            padding-top: 20px;
+        }
+
+        .main-content h1 {
+            color: #343a40;
+            /* Cor do título */
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            /* Cor do fundo dos cards */
+            border: 1px solid rgba(0, 0, 0, 0.125);
+            /* Borda dos cards */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            /* Cor do fundo do modal */
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            /* Borda do modal */
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            /* Sombra do modal */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            /* Cor de fundo do botão primário */
+            border-color: #007bff;
+            /* Cor da borda do botão primário */
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+            /* Cor de fundo do botão primário ao passar o mouse */
+            border-color: #0062cc;
+            /* Cor da borda do botão primário ao passar o mouse */
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            /* Cor de fundo do botão de exclusão */
+            border-color: #dc3545;
+            /* Cor da borda do botão de exclusão */
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            /* Cor de fundo do botão de exclusão ao passar o mouse */
+            border-color: #bd2130;
+            /* Cor da borda do botão de exclusão ao passar o mouse */
+        }
+
+        .sidebar {
+            background-color: #343a40;
+            /* Cor escura do sidebar */
+            color: #fff;
+            /* Texto branco */
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            padding-top: 20px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.5);
+            /* Cor do texto do sidebar */
+        }
+
+        .sidebar .nav-link.active {
+            font-weight: bold;
+            color: #fff;
+            /* Texto branco para item ativo */
+        }
+
+        .main-content {
+            background-color: #f8f9fa;
+            /* Cor de fundo do conteúdo principal */
+            padding-top: 20px;
+        }
+
+        .main-content h1 {
+            color: #343a40;
+            /* Cor do título */
+        }
+
+        .card {
+            background-color: #fff;
+            /* Cor do fundo dos cards */
+        }
+
+        .modal-content {
+            background-color: #f8f9fa;
+            /* Cor do fundo do modal */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="navbar-brand mb-3 mt-2 text-center">
+                    Painel Administrativo
+                </div>
+                <ul class="navbar-nav flex-column mb-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="./Dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./Clientes.html"><i class="fas fa-users"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./Gerenciar.html" id="linkProdutos"><i class="fas fa-boxes"></i> Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./categoria.html" id="linkCategorias"><i class="fas fa-tags"></i> Categorias</a>
+                    </li>
+                    <!-- Adicione mais itens de navegação conforme necessário -->
+                </ul>
+            </nav>
+            <!-- Fim do Sidebar -->
+
+            <!-- Conteúdo Principal -->
+            <main class="col-md-9 col-lg-10 main-content">
+                <div class="container">
+                    <h1 class="mt-4">Gerenciamento de Clientes</h1>
+                    <div id="clientesCards" class="row">
+                        <!-- Cards de Clientes serão inseridos dinamicamente aqui -->
+                    </div>
+                </div>
+            </main>
+            <!-- Fim do Conteúdo Principal -->
+        </div>
+    </div>
+
+    <!-- Modal para adicionar/editar clientes -->
+    <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalClienteLabel">Adicionar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCliente">
+                        <input type="hidden" id="clienteId">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlListarClientes = 'http://localhost:8080/clientes';
+            const formCliente = document.getElementById('formCliente');
+
+            // Função para listar todos os clientes
+            function listarClientes() {
+                fetch(urlListarClientes)
+                    .then(response => response.json())
+                    .then(clientes => {
+                        const clientesCards = document.getElementById('clientesCards');
+
+                        // Montando os cards de clientes dinamicamente
+                        let html = '';
+                        clientes.forEach(cliente => {
+                            html += `
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${cliente.nome}</h5>
+                                        <p class="card-text"><strong>Email:</strong> ${cliente.email}</p>
+                                        <p class="card-text"><strong>Telefone:</strong> ${cliente.telefone ? cliente.telefone : 'Não informado'}</p>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-primary btn-sm btn-editar" data-cliente-id="${cliente.id}">Editar</button>
+                                            <button type="button" class="btn btn-danger btn-sm btn-excluir" data-cliente-id="${cliente.id}">Excluir</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        });
+
+                        // Inserindo os cards na div clientesCards
+                        clientesCards.innerHTML = html;
+
+                        // Adicionar listeners para os botões de editar e excluir
+                        document.querySelectorAll('.btn-editar').forEach(btn => {
+                            btn.addEventListener('click', editarCliente);
+                        });
+
+                        document.querySelectorAll('.btn-excluir').forEach(btn => {
+                            btn.addEventListener('click', deletarCliente);
+                        });
+                    })
+                    .catch(error => console.error('Erro ao buscar clientes:', error));
+            }
+
+            // Função para preencher o formulário de edição com os dados do cliente
+            function editarCliente(event) {
+                const clienteId = event.target.getAttribute('data-cliente-id');
+                fetch(`http://localhost:8080/clientes/${clienteId}`)
+                    .then(response => response.json())
+                    .then(cliente => {
+                        document.getElementById('clienteId').value = cliente.id;
+                        document.getElementById('nome').value = cliente.nome;
+                        document.getElementById('email').value = cliente.email;
+                        document.getElementById('senha').value = cliente.senha;
+                        const modal = new bootstrap.Modal(document.getElementById('modalCliente'));
+                        modal.show();
+                    })
+                    .catch(error => console.error('Erro ao buscar cliente para edição:', error));
+            }
+
+            // Função para deletar um cliente
+            function deletarCliente(event) {
+                const clienteId = event.target.getAttribute('data-cliente-id');
+                if (confirm('Tem certeza que deseja excluir este cliente?')) {
+                    fetch(`http://localhost:8080/clientes/${clienteId}`, {
+                        method: 'DELETE'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Atualizar a lista de clientes após exclusão
+                                listarClientes();
+                                alert('Cliente excluído com sucesso.');
+                            } else {
+                                alert('Erro ao excluir cliente.');
+                            }
+                        })
+                        .catch(error => console.error('Erro ao excluir cliente:', error));
+                }
+            }
+
+            // Event listener para o formulário de adição/editação de cliente
+            formCliente.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const clienteId = document.getElementById('clienteId').value;
+                const url = clienteId ? `http://localhost:8080/clientes/${clienteId}` : 'http://localhost:8080/clientes';
+                const method = clienteId ? 'PUT' : 'POST';
+
+                const cliente = {
+                    nome: document.getElementById('nome').value,
+                    email: document.getElementById('email').value,
+                    senha: document.getElementById('senha').value
+                };
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cliente)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Fechar o modal após adição/edição
+                            const modal = new bootstrap.Modal(document.getElementById('modalCliente'));
+                            modal.hide();
+                            // Atualizar a lista de clientes após adição/edição
+                            listarClientes();
+                            alert(`Cliente ${clienteId ? 'atualizado' : 'adicionado'} com sucesso.`);
+                        } else {
+                            alert('Erro ao salvar cliente.');
+                        }
+                    })
+                    .catch(error => console.error('Erro ao salvar cliente:', error));
+            });
+
+            // Chamando a função para listar clientes ao carregar a página
+            listarClientes();
+        });
+    </script>
+
+</body>
+
+</html>
